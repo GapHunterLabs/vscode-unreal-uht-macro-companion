@@ -1,0 +1,42 @@
+{
+  "name": "unreal-uht-macro-companion",
+  "displayName": "Unreal UHT Macro Companion",
+  "description": "Flags common UnrealHeaderTool macro mistakes in C++ headers: missing .generated.h include, missing GENERATED_BODY(), and raw UObject-derived pointer members without UPROPERTY(). No data leaves your editor.",
+  "version": "0.1.0",
+  "publisher": "GapHunterLabs",
+  "icon": "images/icon.png",
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Linters"
+  ],
+  "keywords": [
+    "unreal-engine",    "uht",    "gamedev",    "cpp"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GapHunterLabs/vscode-unreal-uht-macro-companion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GapHunterLabs/vscode-unreal-uht-macro-companion/issues"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {},
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./",
+    "test": "tsc -p ./ && node --test \"out/test/**/*.test.js\""
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.2"
+  }
+}

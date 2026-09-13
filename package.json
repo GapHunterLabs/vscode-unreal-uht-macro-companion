@@ -2,7 +2,7 @@
   "name": "unreal-uht-macro-companion",
   "displayName": "Unreal UHT Macro Companion",
   "description": "Flags common UnrealHeaderTool macro mistakes in C++ headers: missing .generated.h include, missing GENERATED_BODY(), and raw UObject-derived pointer members without UPROPERTY(). No data leaves your editor.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "GapHunterLabs",
   "icon": "images/icon.png",
   "license": "Apache-2.0",

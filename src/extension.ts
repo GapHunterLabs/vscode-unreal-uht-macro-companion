@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { findUhtIssues, type UhtFinding } from './uhtChecker';
+import { recordHit } from './reviewPrompt';
 
 function messageFor(finding: UhtFinding): string {
   switch (finding.kind) {
@@ -17,7 +18,7 @@ function severityFor(finding: UhtFinding): vscode.DiagnosticSeverity {
   return finding.kind === 'unprotected-uobject-pointer' ? vscode.DiagnosticSeverity.Warning : vscode.DiagnosticSeverity.Error;
 }
 
-function lintDocument(document: vscode.TextDocument, collection: vscode.DiagnosticCollection): void {
+function lintDocument(context: vscode.ExtensionContext, document: vscode.TextDocument, collection: vscode.DiagnosticCollection): void {
   if (document.languageId !== 'cpp' && document.languageId !== 'c') return;
   if (!document.fileName.toLowerCase().endsWith('.h')) return; // UHT reflection only applies to headers
 
@@ -28,6 +29,7 @@ function lintDocument(document: vscode.TextDocument, collection: vscode.Diagnost
     const range = document.lineAt(Math.max(line, 0)).range;
     const diagnostic = new vscode.Diagnostic(range, messageFor(finding), severityFor(finding));
     diagnostic.source = 'Unreal UHT Macro Companion';
+    recordHit(context, `${document.uri.toString()}:${line}:${finding.kind}`);
     return diagnostic;
   });
   collection.set(document.uri, diagnostics);
@@ -47,16 +49,16 @@ export function activate(context: vscode.ExtensionContext): void {
         key,
         setTimeout(() => {
           timers.delete(key);
-          lintDocument(document, collection);
+          lintDocument(context, document, collection);
         }, 300)
       );
     };
   })();
 
-  for (const document of vscode.workspace.textDocuments) lintDocument(document, collection);
+  for (const document of vscode.workspace.textDocuments) lintDocument(context, document, collection);
 
   context.subscriptions.push(
-    vscode.workspace.onDidOpenTextDocument((document) => lintDocument(document, collection)),
+    vscode.workspace.onDidOpenTextDocument((document) => lintDocument(context, document, collection)),
     vscode.workspace.onDidChangeTextDocument((event) => lintAndDebounce(event.document)),
     vscode.workspace.onDidCloseTextDocument((document) => collection.delete(document.uri))
   );
